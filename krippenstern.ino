@@ -12,7 +12,17 @@
 LedControl lc=LedControl(12,11,10,1);
 
 /* we always wait a bit between updates of the display */
-unsigned long delaytime=100;
+unsigned long delaytime=33;
+// uint8_t pic[5][8] = {0};
+
+byte pic [] = { 
+  B00000000,B00000000,B00000000,B11110000,B00000000,B00000000,B00000000,B00000000,
+  B00000000,B10000000,B01100000,B00010000,B00000000,B00000000,B00000000,B00000000,
+  B10000000,B01000000,B00100000,B00010000,B00000000,B00000000,B00000000,B00000000,
+  B01000000,B00100000,B00100000,B00010000,B00000000,B00000000,B00000000,B00000000 };
+  
+
+
 
 void setup() {
   /*
@@ -35,43 +45,83 @@ void stern() {
   byte e[8]={B00000000,B00000000,B00000000,B00010000,B00000000,B00000000,B00000000,B00000000};
   
   
-  
-  
  stern2led(a); 
- delay(delaytime); 
  stern2led(b); 
- delay(delaytime); 
  stern2led(c); 
- delay(delaytime); 
  stern2led(d);
- delay(delaytime); 
  stern2led(e);
- delay(delaytime); 
  lc.clearDisplay(0);
- delay(delaytime);
  stern2led(e);
- delay(delaytime); 
  stern2led(d);
- delay(delaytime); 
  stern2led(c);
- delay(delaytime); 
  stern2led(b);
- delay(delaytime); 
  stern2led(a);
- 
 }
+
+
+
+
+void sternrot() {
+
+  //left down 
+  for(int i=0;i<4;i++) {
+    for(int row=0;row<8;row++) {
+      lc.setColumn(0,row,mirror(pic[i*8+row]) << 1);
+    }
+    delay(delaytime);
+  }
+  
+  //left up normal
+  for(int i=0;i<4;i++) {
+    for(int row=0;row<8;row++) {
+      lc.setRow(0,row,pic[i*8+row] );
+    }
+    delay(delaytime);
+  }
+  
+  // right up
+  for(int i=0;i<4;i++) {
+    for(int row=0;row<9;row++) {
+      lc.setColumn(0,row,(pic[(i+1)*8-row-2]));
+    }
+    delay(delaytime);
+  }
+   
+  // right bottom:mirror x & y
+  for(int i=0;i<4;i++) {
+    for(int row=0;row<9;row++) {
+      lc.setRow(0,row,mirror(pic[(i+1)*8-row-2]) << 1);
+    }
+    delay(delaytime);
+  }
+  
+
+}
+
+unsigned char mirror( unsigned char a )
+{
+  a = ((a >> 4) & 0x0F) | ((a << 4) & 0xF0);
+  a = ((a >> 2) & 0x33) | ((a << 2) & 0xCC);
+  a = ((a >> 1) & 0x55) | ((a << 1) & 0xAA);
+
+  return a;
+}
+
+
+
 
 
 void stern2led(byte a[]) {
   for(int row=0;row<8;row++) {
       lc.setRow(0,row,a[row]);  
   }
+  delay(delaytime*3);
 }
 
 
 
-
 void loop() { 
-  stern();
-  
+ for(int i=0;i<8;i++) { stern(); };
+ for(int i=0;i<3;i++) { sternrot(); };
+
 }
