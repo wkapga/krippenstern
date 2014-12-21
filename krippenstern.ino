@@ -15,11 +15,18 @@ LedControl lc=LedControl(12,11,10,1);
 unsigned long delaytime=33;
 // uint8_t pic[5][8] = {0};
 
-byte pic [] = { 
+const byte pic [] = { 
   B00000000,B00000000,B00000000,B11110000,B00000000,B00000000,B00000000,B00000000,
   B00000000,B10000000,B01100000,B00010000,B00000000,B00000000,B00000000,B00000000,
   B10000000,B01000000,B00100000,B00010000,B00000000,B00000000,B00000000,B00000000,
   B01000000,B00100000,B00100000,B00010000,B00000000,B00000000,B00000000,B00000000 };
+  
+const byte sternpic [] ={
+  B00010000,B01010100,B00111000,B11111110,B00111000,B01010100,B00010000,B00000000,
+  B00010000,B00010000,B00111000,B11111110,B00111000,B00010000,B00010000,B00000000,
+  B00000000,B00010000,B00010000,B01111100,B00010000,B00010000,B00000000,B00000000,
+  B00000000,B00000000,B00010000,B00111000,B00010000,B00000000,B00000000,B00000000,
+  B00000000,B00000000,B00000000,B00010000,B00000000,B00000000,B00000000,B00000000};
   
 
 
@@ -36,30 +43,23 @@ void setup() {
   lc.clearDisplay(0);
 }
 
-void stern() {
-  /* here is the data for the characters */
-  byte a[8]={B00010000,B01010100,B00111000,B11111110,B00111000,B01010100,B00010000,B00000000};
-  byte b[8]={B00010000,B00010000,B00111000,B11111110,B00111000,B00010000,B00010000,B00000000};
-  byte c[8]={B00000000,B00010000,B00010000,B01111100,B00010000,B00010000,B00000000,B00000000};
-  byte d[8]={B00000000,B00000000,B00010000,B00111000,B00010000,B00000000,B00000000,B00000000};
-  byte e[8]={B00000000,B00000000,B00000000,B00010000,B00000000,B00000000,B00000000,B00000000};
-  
-  
- stern2led(a); 
- stern2led(b); 
- stern2led(c); 
- stern2led(d);
- stern2led(e);
+void stern2() {
+  for(int i=0;i<5;i++) { 
+    for(int row=0;row<8;row++) {
+        lc.setRow(0,row,sternpic[i*8+row]);  
+    }
+    delay(delaytime*3);
+  }
  lc.clearDisplay(0);
- stern2led(e);
- stern2led(d);
- stern2led(c);
- stern2led(b);
- stern2led(a);
-}
-
-
-
+ delay(delaytime*3);
+  for(int i=0;i<5;i++) { 
+    for(int row=0;row<8;row++) {
+        lc.setRow(0,row,sternpic[(4-i)*8+row]);  
+    }
+    delay(delaytime*3);
+  } 
+}  
+  
 
 void sternrot() {
 
@@ -107,21 +107,8 @@ unsigned char mirror( unsigned char a )
   return a;
 }
 
-
-
-
-
-void stern2led(byte a[]) {
-  for(int row=0;row<8;row++) {
-      lc.setRow(0,row,a[row]);  
-  }
-  delay(delaytime*3);
-}
-
-
-
 void loop() { 
- for(int i=0;i<8;i++) { stern(); };
+ for(int i=0;i<8;i++) { stern2(); };
  for(int i=0;i<3;i++) { sternrot(); };
 
 }
