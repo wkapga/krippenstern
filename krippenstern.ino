@@ -107,8 +107,32 @@ unsigned char mirror( unsigned char a )
   return a;
 }
 
+
+void kl_stern(int x, int y) {
+ lc.setLed(0,x,y,true);
+ delay(3*delaytime);
+ lc.setLed(0,x+1,y,true);
+ lc.setLed(0,x,y+1,true);
+ lc.setLed(0,x-1,y,true);
+ lc.setLed(0,x,y-1,true);
+ delay(5*delaytime);
+ lc.clearDisplay(0);
+ lc.setLed(0,x,y,true);
+ delay(3*delaytime);
+ lc.setLed(0,x,y,false);
+ delay(8*delaytime);
+ 
+
+}
+
+
+
 void loop() { 
  for(int i=0;i<8;i++) { stern2(); };
- for(int i=0;i<3;i++) { sternrot(); };
-
+ lc.clearDisplay(0);
+ // for(int i=0;i<3;i++) { sternrot(); };
+ for(int i=0;i<9;i++) {kl_stern(random(1,7),random(1,7)); }
+ for(int i=1;i<7;i++) {kl_stern(i,i); };
+ kl_stern(6,6);
+ for(int i=1;i<7;i++) {kl_stern(7-i,7-i); };
 }
